@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Person from './Person/Person';
-import CharComponent from './CharComponent/CharComponent'
-import ValidationComponent from './ValidationComponent/ValidationComponent'
+import Char from './Char/Char'
+import Validation from './Validation/Validation'
 
 class App extends Component {
   state = {
@@ -13,9 +13,7 @@ class App extends Component {
       { id: 'pmmnxcbm', name: 'DJ Khaled', age: 86, username: 'DJK' }
     ],
     showPersons: false,
-    input: null,
-    inputLength: null,
-    inputCharacters: null,
+    input: '',
   }
 
   togglePersonsHandler = () => {
@@ -48,26 +46,14 @@ class App extends Component {
 
   inputChangedHandler = event => {
     const input = event.target.value;
-    const inputLength = input.length;
-    const inputCharacters = input.split('');
-
-    this.setState( {
-      input: input, 
-      inputLength: inputLength, 
-      inputCharacters: inputCharacters
-    } );
+    this.setState( {input: input} );
   }
 
-  deleteCharacterHandler = (characterIndex) => {
-    const inputCharacters = [...this.state.inputCharacters];
-    inputCharacters.splice(characterIndex, 1);
-
-    const input = inputCharacters.join('')
-
-    this.setState({
-      input: input, 
-      inputCharacters: inputCharacters
-    })
+  deleteCharacterHandler = (index) => {
+    const text = this.state.input.split('');
+    text.splice(index, 1);
+    const updatedText = text.join('');
+    this.setState({input: updatedText});
   }
 
   render () {
@@ -96,19 +82,11 @@ class App extends Component {
       );
     }
     
-    let inputCharacters = null;
-    
-    if (this.state.inputCharacters) {
-      inputCharacters = (
-        <div>
-          {this.state.inputCharacters.map((character, index) => {
-            return <CharComponent 
-            character={character} 
-            click={() => this.deleteCharacterHandler(index)} />
-          })}
-        </div> 
-      );
-    }
+    const charList = this.state.input.split('').map((ch, index) => {
+      return <Char 
+        character={ch} 
+        click={() => this.deleteCharacterHandler(index)} />;
+    });
 
     return (
       <div className="App">
@@ -127,8 +105,8 @@ class App extends Component {
           </input>
         </p>
         <p>{this.state.inputLength}</p>
-        <ValidationComponent inputLength={this.state.inputLength}/>
-        { inputCharacters }
+        <Validation inputLength={this.state.input.length}/>
+        {charList}
       </div>
     );
   }
